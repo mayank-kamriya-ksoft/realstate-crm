@@ -48,8 +48,49 @@ export default function Auth() {
     setLoading(false);
   };
 
+  const handleQuickLogin = async (role: string, email: string) => {
+    setEmail(email);
+    setPassword("#Mayank99");
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ 
+      email, 
+      password: "#Mayank99" 
+    });
+    if (error) {
+      toast.error(error.message);
+    } else {
+      navigate("/dashboard");
+    }
+    setLoading(false);
+  };
+
+  const quickLoginRoles = [
+    { name: "Broker", email: "broker@broker.com", role: "broker" },
+    { name: "Sales", email: "sales@sales.com", role: "sales_agent" },
+    { name: "Client", email: "client@client.com", role: "client" },
+    { name: "Supplier", email: "supplier@supplier.com", role: "supplier" },
+    { name: "Affiliate", email: "affiliate@affiliate.com", role: "affiliate" },
+  ];
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 gap-4 flex-wrap">
+      <div className="hidden lg:flex flex-col gap-2 w-48">
+        <h3 className="text-sm font-semibold mb-2 px-2">Quick Login</h3>
+        {quickLoginRoles.map((r) => (
+          <Button
+            key={r.role}
+            variant="outline"
+            size="sm"
+            className="justify-start gap-2 h-10"
+            onClick={() => handleQuickLogin(r.role, r.email)}
+            disabled={loading}
+            data-testid={`button-quick-login-${r.role}`}
+          >
+            <Building2 className="h-4 w-4" />
+            {r.name} Login
+          </Button>
+        ))}
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
